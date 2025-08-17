@@ -1,0 +1,12 @@
+{
+  "name": "to-do-list-project",
+  "version": "1.0.0",
+  "description": "A Node.js To-Do List is a real-time task manager that streamlines daily productivity with seamless add, update, and track features.",
+  "license": "ISC",
+  "author": "rajeev",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
