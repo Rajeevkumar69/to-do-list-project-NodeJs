@@ -12,25 +12,30 @@
           <h2>Update Task</h2>
           <form action="/update" method="post">
                <div class="form-group">
-                    <label>Date</label>
-                    <input type="date">
+                    <label for="taskDate">Date</label>
+                    <input id="taskDate" name="taskDate" type="date">
                </div>
+
                <div class="form-group">
-                    <label>Task Title</label>
-                    <input type="text" placeholder="Enter task title">
+                    <label for="taskTitle">Task Title</label>
+                    <input id="taskTitle" name="taskTitle" type="text" placeholder="Enter task title">
                </div>
+
                <div class="form-group">
-                    <label>Description</label>
-                    <textarea rows="3" placeholder="Enter task description"></textarea>
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" name="taskDescription" rows="3"
+                         placeholder="Enter task description"></textarea>
                </div>
+
                <div class="form-group">
-                    <label>Status</label>
-                    <select>
-                         <option>Pending</option>
-                         <option>Completed</option>
-                         <option>In Progress</option>
+                    <label for="taskStatus">Status</label>
+                    <select id="taskStatus" name="taskStatus">
+                         <option value="pending">Pending</option>
+                         <option value="completed">Completed</option>
+                         <option value="in-progress">In Progress</option>
                     </select>
                </div>
+
                <div class="form-actions">
                     <a href="/" class="btn-cancel">Cancel</a>
                     <button type="submit" class="btn-submit">Update</button>
