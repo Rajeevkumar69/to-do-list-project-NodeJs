@@ -18,7 +18,21 @@ app.get('/add-task', (req, res) => {
     res.render('add-task');
 });
 
+app.get('/update-task', (req, res) => {
+    res.render('update-task');
+});
 
+app.get('/delete', (req, res) => {
+    res.send('Task deleted!');
+});
+
+app.post("/add", (req, res)=>{
+    res.redirect('/');
+});
+
+app.post("/update", (req, res)=>{
+    res.redirect('/');
+});
 
 
 app.listen(arg[2], () => {
