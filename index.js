@@ -1,10 +1,13 @@
 import express from "express";
+import path from 'path';
 const arg = process.argv;
 
 
 const app = express();
+const publicPath = path.resolve('public');
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({extended:true}));
+app.use(express.static(publicPath));
+app.use(express.urlencoded({ extended: true }));
 
 
 app.get("/", (req, res) => {
