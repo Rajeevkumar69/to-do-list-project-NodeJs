@@ -22,8 +22,15 @@ const connection = async () => {
     return await coneect.db(dbName);
 }
 
-app.get("/", (req, res) => {
-    res.render('dashboard');
+app.get("/", async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const result = await collection.find().toArray();
+        res.render('dashboard', {result} );
+    } catch (error) {
+        res.send(`Something went wrong, Try again`);
+    }
 });
 
 app.get('/add-task', (req, res) => {
@@ -42,8 +49,6 @@ app.post("/add", async (req, res) => {
     const db = await connection();
     const collection = db.collection(collectionName);
     const result = await collection.insertOne(req.body);
-    console.log(result);
-    
     if (result) {
         res.redirect('/');
     } else {
@@ -59,4 +64,4 @@ app.post("/update", (req, res) => {
 
 app.listen(arg[2], () => {
     console.log(`Server is running on ${arg[2]}`);
-})
+});

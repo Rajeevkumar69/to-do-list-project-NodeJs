@@ -28,30 +28,26 @@
                     </tr>
                </thead>
                <tbody>
-                    <tr>
-                         <td>2025-08-18</td>
-                         <td>Complete Report</td>
-                         <td>Finish the sales report for Q3</td>
-                         <td>Pending</td>
-                         <td><a href="/update-task" class="icon-btn edit">✏️</a><a href="/delete"
-                                   class="icon-btn delete">🗑️</a></td>
-                    </tr>
-                    <tr>
-                         <td>2025-08-17</td>
-                         <td>Team Meeting</td>
-                         <td>Weekly sync with project team</td>
-                         <td>Completed</td>
-                         <td><a href="/update-task" class="icon-btn edit">✏️</a><a href="/delete"
-                                   class="icon-btn delete">🗑️</a></td>
-                    </tr>
-                    <tr>
-                         <td>2025-08-16</td>
-                         <td>Code Review</td>
-                         <td>Review pull requests on GitHub</td>
-                         <td>Pending</td>
-                         <td><a href="/update-task" class="icon-btn edit">✏️</a><a href="/delete"
-                                   class="icon-btn delete">🗑️</a></td>
-                    </tr>
+                    <% result.forEach(function(task){ %>
+                         <tr>
+                              <td>
+                                   <%= task.taskDate %>
+                              </td>
+                              <td>
+                                   <%= task.taskTitle %>
+                              </td>
+                              <td>
+                                   <%= task.taskDescription %>
+                              </td>
+                              <td>
+                                   <%= task.taskStatus %>
+                              </td>
+                              <td>
+                                   <a href="/update-task/<%= task._id %>" class="icon-btn edit">✏️</a>
+                                   <a href="/delete/<%= task._id %>" class="icon-btn delete">🗑️</a>
+                              </td>
+                         </tr>
+                         <% }) %>
                </tbody>
           </table>
      </div>
