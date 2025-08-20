@@ -16,41 +16,59 @@
                <h2>Dashboard</h2>
                <a href="/add-task" class="add-btn">+ Add Task</a>
           </div>
-
-          <table>
-               <thead>
-                    <tr>
-                         <th>Date</th>
-                         <th>Task</th>
-                         <th>Description</th>
-                         <th>Status</th>
-                         <th>Actions</th>
-                    </tr>
-               </thead>
-               <tbody>
-                    <% result.forEach(function(task){ %>
+          <form action="/delete-multiple" method="post">
+               <table>
+                    <thead>
                          <tr>
-                              <td>
-                                   <%= task.taskDate %>
-                              </td>
-                              <td>
-                                   <%= task.taskTitle %>
-                              </td>
-                              <td>
-                                   <%= task.taskDescription %>
-                              </td>
-                              <td>
-                                   <%= task.taskStatus %>
-                              </td>
-                              <td>
-                                   <a href="/update-task/<%= task._id %>" class="icon-btn edit">✏️</a>
-                                   <a href="/delete/<%= task._id %>" class="icon-btn delete">🗑️</a>
-                              </td>
+                              <th></th>
+                              <th>Date</th>
+                              <th>Task</th>
+                              <th>Description</th>
+                              <th>Status</th>
+                              <th>Actions</th>
                          </tr>
-                         <% }) %>
-               </tbody>
-          </table>
+                    </thead>
+                    <tbody>
+                         <% result.forEach(function(task){ %>
+                              <tr>
+                                   <td><input type="checkbox" class="row-check" name="selectedTasks"
+                                             value="<%= task._id %>"></td>
+                                   <td>
+                                        <%= task.taskDate %>
+                                   </td>
+                                   <td>
+                                        <%= task.taskTitle %>
+                                   </td>
+                                   <td>
+                                        <%= task.taskDescription %>
+                                   </td>
+                                   <td>
+                                        <%= task.taskStatus %>
+                                   </td>
+                                   <td>
+                                        <a href="/update-task/<%= task._id %>" class="icon-btn edit">✏️</a>
+                                        <a href="/delete/<%= task._id %>" class="icon-btn delete">🗑️</a>
+                                   </td>
+                              </tr>
+                              <% }) %>
+                    </tbody>
+               </table>
+               <button type="submit" id="deleteSelectedBtn" class="btn btn-delete-selected" style="display:none;">Delete
+                    Selected</button>
+          </form>
      </div>
+
+     <script>
+          const checkboxes = document.querySelectorAll('.row-check');
+          const deleteBtn = document.getElementById('deleteSelectedBtn');
+
+          checkboxes.forEach(cb => {
+               cb.addEventListener('change', () => {
+                    const checked = document.querySelectorAll('.row-check:checked').length;
+                    deleteBtn.style.display = checked > 1 ? 'inline-block' : 'none';
+               });
+          });
+     </script>
 </body>
 
 </html>

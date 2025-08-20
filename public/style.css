@@ -29,7 +29,8 @@ body {
      letter-spacing: 0.5px;
 }
 
-.header-action .add-btn {
+.header-action .add-btn,
+.btn-delete-selected {
      background-color: #3498db;
      color: #fff;
      border: none;
@@ -42,14 +43,15 @@ body {
      transition: background-color 0.2s ease-in-out;
 }
 
-.header-action .add-btn:hover {
+.header-action .add-btn,
+.btn-delete-selected:hover {
      background-color: #2980b9;
 }
 
 .container {
-     max-width: 950px;
-     margin: 40px auto;
-     padding: 20px;
+     max-width: 600px;
+     margin: 50px auto;
+     padding: 25px;
      background: #fff;
      border-radius: 10px;
      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -86,8 +88,6 @@ td:last-child {
 
 .icon-btn {
      cursor: pointer;
-     margin: 0 5px;
-     font-size: 15px;
      border: none;
      background: none;
      transition: 0.2s;
@@ -107,23 +107,6 @@ td:last-child {
 
 tbody tr:hover {
      background: #f9fafc;
-}
-
-body {
-     margin: 0;
-     font-family: "Segoe UI", Arial, sans-serif;
-     background: #f4f7fb;
-     font-size: 14px;
-     color: #2c3e50;
-}
-
-.container {
-     max-width: 500px;
-     margin: 50px auto;
-     padding: 25px;
-     background: #fff;
-     border-radius: 10px;
-     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
 h2 {
@@ -193,6 +176,7 @@ textarea {
 .btn-submit:hover {
      background-color: #536d87;
 }
-a{
+
+a {
      text-decoration: none;
 }

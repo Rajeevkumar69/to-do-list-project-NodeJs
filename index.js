@@ -91,6 +91,21 @@ app.get('/delete/:id', async (req, res) => {
     }
 });
 
+app.post("/delete-multiple", async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const ids = [].concat(req.body.selectedTasks || []);
+        const selectedItems = ids.map(id => new ObjectId(id));
+        const result = await collection.deleteMany({_id:{$in:selectedItems}});
+        if (result) {
+            res.redirect('/');
+        }
+    } catch (error) {
+        res.send(`Someting went wrong, Try again`);
+    }
+})
+
 
 app.listen(arg[2], () => {
     console.log(`Server is running on ${arg[2]}`);
