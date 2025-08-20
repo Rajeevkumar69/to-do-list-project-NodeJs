@@ -1,7 +1,7 @@
 import express from "express";
 import path from 'path';
 import dotenv from 'dotenv';
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 const arg = process.argv;
 
 
@@ -27,7 +27,7 @@ app.get("/", async (req, res) => {
         const db = await connection();
         const collection = db.collection(collectionName);
         const result = await collection.find().toArray();
-        res.render('dashboard', {result} );
+        res.render('dashboard', { result });
     } catch (error) {
         res.send(`Something went wrong, Try again`);
     }
@@ -41,9 +41,6 @@ app.get('/update-task', (req, res) => {
     res.render('update-task');
 });
 
-app.get('/delete', (req, res) => {
-    res.send('Task deleted!');
-});
 
 app.post("/add", async (req, res) => {
     const db = await connection();
@@ -59,6 +56,19 @@ app.post("/add", async (req, res) => {
 
 app.post("/update", (req, res) => {
     res.redirect('/');
+});
+
+app.get('/delete/:id', async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const result = await collection.deleteOne({_id: new ObjectId(req.params.id)});
+        if (result) {
+            res.redirect('/');
+        }
+    } catch (error) {
+        res.send(`Someting went wrong!`);
+    }
 });
 
 
