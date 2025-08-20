@@ -53,21 +53,23 @@
                               <% }) %>
                     </tbody>
                </table>
-               <button type="submit" id="deleteSelectedBtn" class="btn btn-delete-selected" style="display:none;">Delete
-                    Selected</button>
+               <button type="submit" id="deleteSelectedBtn" class="btn btn-delete-selected" style="display:none;">
+                    Delete Selected
+               </button>
           </form>
      </div>
 
      <script>
           const checkboxes = document.querySelectorAll('.row-check');
           const deleteBtn = document.getElementById('deleteSelectedBtn');
-
+          function toggleDeleteBtn() {
+               const checked = document.querySelectorAll('.row-check:checked').length;
+               deleteBtn.style.display = checked > 1 ? 'inline-block' : 'none';
+          }
           checkboxes.forEach(cb => {
-               cb.addEventListener('change', () => {
-                    const checked = document.querySelectorAll('.row-check:checked').length;
-                    deleteBtn.style.display = checked > 1 ? 'inline-block' : 'none';
-               });
+               cb.addEventListener('change', toggleDeleteBtn);
           });
+          toggleDeleteBtn();
      </script>
 </body>
 
