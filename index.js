@@ -50,10 +50,6 @@ app.post("/add", async (req, res) => {
 
 });
 
-app.post("/update", (req, res) => {
-    res.redirect('/');
-});
-
 app.get('/update-task/:id', async (req, res) => {
     try {
         const db = await connection();
@@ -64,6 +60,21 @@ app.get('/update-task/:id', async (req, res) => {
         }
     } catch (error) {
         res.send(`Someting went wrong!`);
+    }
+});
+
+app.post("/update/:id", async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const filter = { _id: new ObjectId(req.params.id) }
+        const updatedData = { $set: { taskDate: req.body.taskDate, taskTitle: req.body.taskTitle, taskDescription: req.body.taskDescription, taskStatus: req.body.taskStatus } };
+        const result = await collection.updateOne(filter, updatedData);
+        if (result) {
+            res.redirect('/');
+        }
+    } catch (error) {
+        res.send(`Someting went wrong, Try again!`);
     }
 });
 
