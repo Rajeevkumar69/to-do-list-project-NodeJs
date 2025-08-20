@@ -37,10 +37,6 @@ app.get('/add-task', (req, res) => {
     res.render('add-task');
 });
 
-app.get('/update-task', (req, res) => {
-    res.render('update-task');
-});
-
 
 app.post("/add", async (req, res) => {
     const db = await connection();
@@ -58,11 +54,24 @@ app.post("/update", (req, res) => {
     res.redirect('/');
 });
 
+app.get('/update-task/:id', async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const result = await collection.findOne({ _id: new ObjectId(req.params.id) });
+        if (result) {
+            res.render('update-task', { result });
+        }
+    } catch (error) {
+        res.send(`Someting went wrong!`);
+    }
+});
+
 app.get('/delete/:id', async (req, res) => {
     try {
         const db = await connection();
         const collection = db.collection(collectionName);
-        const result = await collection.deleteOne({_id: new ObjectId(req.params.id)});
+        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
         if (result) {
             res.redirect('/');
         }

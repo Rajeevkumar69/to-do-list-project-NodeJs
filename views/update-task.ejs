@@ -10,29 +10,31 @@
 <body>
      <div class="container">
           <h2>Update Task</h2>
-          <form action="/update" method="post">
+          <form action="/update/<%= result._id %>" method="post">
                <div class="form-group">
                     <label for="taskDate">Date</label>
-                    <input id="taskDate" name="taskDate" type="date">
+                    <input id="taskDate" name="taskDate" type="date" value="<%= result.taskDate %>">
                </div>
 
                <div class="form-group">
                     <label for="taskTitle">Task Title</label>
-                    <input id="taskTitle" name="taskTitle" type="text" placeholder="Enter task title">
+                    <input id="taskTitle" name="taskTitle" type="text" value="<%= result.taskTitle %>">
                </div>
 
                <div class="form-group">
                     <label for="taskDescription">Description</label>
-                    <textarea id="taskDescription" name="taskDescription" rows="3"
-                         placeholder="Enter task description"></textarea>
+                    <textarea id="taskDescription" name="taskDescription"
+                         rows="3"><%= result.taskDescription %></textarea>
                </div>
 
                <div class="form-group">
                     <label for="taskStatus">Status</label>
                     <select id="taskStatus" name="taskStatus">
-                         <option value="pending">Pending</option>
-                         <option value="completed">Completed</option>
-                         <option value="in-progress">In Progress</option>
+                         <option value="pending" <%=result.taskStatus==='pending' ? 'selected' : '' %>>Pending</option>
+                         <option value="completed" <%=result.taskStatus==='completed' ? 'selected' : '' %>>Completed
+                         </option>
+                         <option value="in-progress" <%=result.taskStatus==='in-progress' ? 'selected' : '' %>>In
+                              Progress</option>
                     </select>
                </div>
 
