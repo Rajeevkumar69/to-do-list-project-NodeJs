@@ -13,14 +13,13 @@ app.use(express.urlencoded({ extended: true }));
 
 dotenv.config();
 
-const dbName = process.env.DB_NAME;
-const collectionName = process.env.COLLECTION_NAME;
-
-const client = new MongoClient(process.env.DATABASE_URL || process.env.OBTAINER_URL || 'mongodb')
+const dbName = 'node-project';
+const collectionName = 'todo-list';
+const dbUrl = new MongoClient('mongodb://localhost:27017');
 
 const connection = async () => {
     try {
-        const connect = await client.connect();
+        const connect = await dbUrl.connect();
         return connect.db(dbName);
     } catch (error) {
         console.error('Database connection error:', error);
