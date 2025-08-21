@@ -2,29 +2,24 @@ import express from "express";
 import path from 'path';
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from "mongodb";
-
 const arg = process.argv;
+
 
 const app = express();
 const publicPath = path.resolve('public');
 app.set('view engine', 'ejs');
 app.use(express.static(publicPath));
 app.use(express.urlencoded({ extended: true }));
-
 dotenv.config();
 
-const dbName = 'node-project';
-const collectionName = 'todo-list';
-const dbUrl = new MongoClient('mongodb://localhost:27017');
+const dbName = process.env.DB_NAME;
+const collectionName = process.env.COLLECTION_NAME;
+const client = new MongoClient(process.env.DATABASE_URL);
+
 
 const connection = async () => {
-    try {
-        const connect = await dbUrl.connect();
-        return connect.db(dbName);
-    } catch (error) {
-        console.error('Database connection error:', error);
-        throw error;
-    }
+    const coneect = await client.connect();
+    return await coneect.db(dbName);
 }
 
 app.get("/", async (req, res) => {
@@ -34,8 +29,7 @@ app.get("/", async (req, res) => {
         const result = await collection.find().toArray();
         res.render('dashboard', { result });
     } catch (error) {
-        console.error('Error fetching tasks:', error);
-        res.send(`Error connecting database!`);
+        res.send(`Something went wrong, Try again`);
     }
 });
 
@@ -43,20 +37,17 @@ app.get('/add-task', (req, res) => {
     res.render('add-task');
 });
 
+
 app.post("/add", async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const result = await collection.insertOne(req.body);
-        if (result) {
-            res.redirect('/');
-        } else {
-            res.send(`Something went wrong!`);
-        }
-    } catch (error) {
-        console.error('Error adding task:', error);
-        res.send(`Something went wrong!`);
+    const db = await connection();
+    const collection = db.collection(collectionName);
+    const result = await collection.insertOne(req.body);
+    if (result) {
+        res.redirect('/');
+    } else {
+        res.send(`Someting went wrong!`);
     }
+
 });
 
 app.get('/update-task/:id', async (req, res) => {
@@ -68,8 +59,7 @@ app.get('/update-task/:id', async (req, res) => {
             res.render('update-task', { result });
         }
     } catch (error) {
-        console.error('Error fetching task for update:', error);
-        res.send(`Something went wrong!`);
+        res.send(`Someting went wrong!`);
     }
 });
 
@@ -84,8 +74,7 @@ app.post("/update/:id", async (req, res) => {
             res.redirect('/');
         }
     } catch (error) {
-        console.error('Error updating task:', error);
-        res.send(`Something went wrong, Try again!`);
+        res.send(`Someting went wrong, Try again!`);
     }
 });
 
@@ -98,8 +87,7 @@ app.get('/delete/:id', async (req, res) => {
             res.redirect('/');
         }
     } catch (error) {
-        console.error('Error deleting task:', error);
-        res.send(`Something went wrong!`);
+        res.send(`Someting went wrong!`);
     }
 });
 
@@ -114,13 +102,11 @@ app.post("/delete-multiple", async (req, res) => {
             res.redirect('/');
         }
     } catch (error) {
-        console.error('Error deleting multiple tasks:', error);
-        res.send(`Something went wrong, Try again`);
+        res.send(`Someting went wrong, Try again`);
     }
-});
+})
 
-const port = process.env.PORT || arg[2] || 3000;
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(arg[2], () => {
+    console.log(`Server is running on ${arg[2]}`);
 });
