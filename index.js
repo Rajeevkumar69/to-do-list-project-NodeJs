@@ -35,7 +35,7 @@ app.get("/", async (req, res) => {
         res.render('dashboard', { result });
     } catch (error) {
         console.error('Error fetching tasks:', error);
-        res.send(`Something went wrong, Try again`);
+        res.send(`Error connecting database!`);
     }
 });
 
