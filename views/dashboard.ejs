@@ -11,7 +11,16 @@
      <nav class="navbar">
           <div class="brand">CR To-Do</div>
      </nav>
+
      <div class="container">
+          <div class="search-bar">
+               <div class="search-bar">
+                    <form action="/search" method="get">
+                         <input type="text" name="q" placeholder="Search tasks..." class="search-input">
+                         <button type="submit" class="search-btn">Search</button>
+                    </form>
+               </div>
+          </div>
           <div class="header-action">
                <h2>Dashboard</h2>
                <a href="/add-task" class="add-btn">+ Add Task</a>

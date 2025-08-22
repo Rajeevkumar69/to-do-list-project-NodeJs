@@ -97,14 +97,35 @@ app.post("/delete-multiple", async (req, res) => {
         const collection = db.collection(collectionName);
         const ids = [].concat(req.body.selectedTasks || []);
         const selectedItems = ids.map(id => new ObjectId(id));
-        const result = await collection.deleteMany({_id:{$in:selectedItems}});
+        const result = await collection.deleteMany({ _id: { $in: selectedItems } });
         if (result) {
             res.redirect('/');
         }
     } catch (error) {
         res.send(`Someting went wrong, Try again`);
     }
-})
+});
+
+app.get("/search", async (req, res) => {
+    try {
+        const db = await connection();
+        const collection = db.collection(collectionName);
+        const searchText = req.query.q || "";
+        const result = await collection.find({
+            $or: [
+                { taskDate: { $regex: searchText, $options: "i" } },
+                { taskTitle: { $regex: searchText, $options: "i" } },
+                { taskDescription: { $regex: searchText, $options: "i" } },
+                { taskStatus: { $regex: searchText, $options: "i" } }
+            ]
+        }).toArray();
+        res.render("dashboard", { result });
+
+    } catch (error) {
+        console.error(error);
+        res.send("Error during search, Try again");
+    }
+});
 
 
 app.listen(arg[2], () => {
