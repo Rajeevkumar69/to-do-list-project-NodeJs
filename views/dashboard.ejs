@@ -14,12 +14,10 @@
 
      <div class="container">
           <div class="search-bar">
-               <div class="search-bar">
-                    <form action="/search" method="get">
-                         <input type="text" name="q" placeholder="Search tasks..." class="search-input">
-                         <button type="submit" class="search-btn">Search</button>
-                    </form>
-               </div>
+               <form action="/search" method="get">
+                    <input type="text" name="q" value="<%= query %>" placeholder="Search tasks..." class="search-input">
+                    <button type="submit" class="search-btn">Search</button>
+               </form>
           </div>
           <div class="header-action">
                <h2>Dashboard</h2>
@@ -38,34 +36,59 @@
                          </tr>
                     </thead>
                     <tbody>
-                         <% result.forEach(function(task){ %>
-                              <tr>
-                                   <td><input type="checkbox" class="row-check" name="selectedTasks"
-                                             value="<%= task._id %>"></td>
-                                   <td>
-                                        <%= task.taskDate %>
-                                   </td>
-                                   <td>
-                                        <%= task.taskTitle %>
-                                   </td>
-                                   <td>
-                                        <%= task.taskDescription %>
-                                   </td>
-                                   <td>
-                                        <%= task.taskStatus %>
-                                   </td>
-                                   <td>
-                                        <a href="/update-task/<%= task._id %>" class="icon-btn edit">✏️</a>
-                                        <a href="/delete/<%= task._id %>" class="icon-btn delete">🗑️</a>
-                                   </td>
-                              </tr>
-                              <% }) %>
+                         <% if (result.length>0) { %>
+                              <% result.forEach(function(task){ %>
+                                   <tr>
+                                        <td><input type="checkbox" class="row-check" name="selectedTasks"
+                                                  value="<%= task._id %>"></td>
+                                        <td>
+                                             <%= task.taskDate %>
+                                        </td>
+                                        <td>
+                                             <%= task.taskTitle %>
+                                        </td>
+                                        <td>
+                                             <%= task.taskDescription %>
+                                        </td>
+                                        <td>
+                                             <%= task.taskStatus %>
+                                        </td>
+                                        <td>
+                                             <a href="/update-task/<%= task._id %>" class="icon-btn edit">✏️</a>
+                                             <a href="/delete/<%= task._id %>" class="icon-btn delete">🗑️</a>
+                                        </td>
+                                   </tr>
+                                   <% }) %>
+                                        <% } else { %>
+                                             <tr>
+                                                  <td colspan="6" style="text-align:center;">No tasks found</td>
+                                             </tr>
+                                             <% } %>
                     </tbody>
                </table>
                <button type="submit" id="deleteSelectedBtn" class="btn btn-delete-selected" style="display:none;">
                     Delete Selected
                </button>
           </form>
+          <div class="pagination">
+               <% if (totalPages>1) { %>
+                    <ul>
+                         <% if (currentPage>1) { %>
+                              <li><a href="/?page=<%= currentPage - 1 %>">Previous</a></li>
+                              <% } %>
+                                   <% for (let i=1; i<=totalPages; i++) { %>
+                                        <li class="<%= currentPage === i ? 'active' : '' %>">
+                                             <a href="/?page=<%= i %>">
+                                                  <%= i %>
+                                             </a>
+                                        </li>
+                                        <% } %>
+                                             <% if (currentPage<totalPages) { %>
+                                                  <li><a href="/?page=<%= currentPage + 1 %>">Next</a></li>
+                                                  <% } %>
+                    </ul>
+                    <% } %>
+          </div>
      </div>
 
      <script>
@@ -75,9 +98,7 @@
                const checked = document.querySelectorAll('.row-check:checked').length;
                deleteBtn.style.display = checked > 1 ? 'inline-block' : 'none';
           }
-          checkboxes.forEach(cb => {
-               cb.addEventListener('change', toggleDeleteBtn);
-          });
+          checkboxes.forEach(cb => cb.addEventListener('change', toggleDeleteBtn));
           toggleDeleteBtn();
      </script>
 </body>

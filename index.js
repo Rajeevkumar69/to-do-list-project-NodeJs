@@ -18,116 +18,123 @@ const client = new MongoClient(process.env.DATABASE_URL);
 
 
 const connection = async () => {
-    const coneect = await client.connect();
-    return await coneect.db(dbName);
+     const coneect = await client.connect();
+     return await coneect.db(dbName);
 }
 
 app.get("/", async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const result = await collection.find().toArray();
-        res.render('dashboard', { result });
-    } catch (error) {
-        res.send(`Something went wrong, Try again`);
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const page = req.query.page || 1;
+          const limit = req.query.limit || 5;
+          const skip = (page - 1) * limit;
+          const totalDocs = await collection.countDocuments();
+          const totalPages = Math.ceil(totalDocs / limit);
+          if (skip >= totalDocs && totalDocs > 0) {
+               return res.redirect("/?page=1");
+          }
+          const result = await collection.find().skip(skip).limit(limit).toArray();
+          res.render("dashboard", { result, totalPages, currentPage: page, query: "" });
+     } catch (error) {
+          console.log(error);
+          res.send("Error loading data, Please try again.");
+     }
 });
 
 app.get('/add-task', (req, res) => {
-    res.render('add-task');
+     res.render('add-task');
 });
 
 
 app.post("/add", async (req, res) => {
-    const db = await connection();
-    const collection = db.collection(collectionName);
-    const result = await collection.insertOne(req.body);
-    if (result) {
-        res.redirect('/');
-    } else {
-        res.send(`Someting went wrong!`);
-    }
+     const db = await connection();
+     const collection = db.collection(collectionName);
+     const result = await collection.insertOne(req.body);
+     if (result) {
+          res.redirect('/');
+     } else {
+          res.send(`Someting went wrong!`);
+     }
 
 });
 
 app.get('/update-task/:id', async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const result = await collection.findOne({ _id: new ObjectId(req.params.id) });
-        if (result) {
-            res.render('update-task', { result });
-        }
-    } catch (error) {
-        res.send(`Someting went wrong!`);
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const result = await collection.findOne({ _id: new ObjectId(req.params.id) });
+          if (result) {
+               res.render('update-task', { result });
+          }
+     } catch (error) {
+          res.send(`Someting went wrong!`);
+     }
 });
 
 app.post("/update/:id", async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const filter = { _id: new ObjectId(req.params.id) }
-        const updatedData = { $set: { taskDate: req.body.taskDate, taskTitle: req.body.taskTitle, taskDescription: req.body.taskDescription, taskStatus: req.body.taskStatus } };
-        const result = await collection.updateOne(filter, updatedData);
-        if (result) {
-            res.redirect('/');
-        }
-    } catch (error) {
-        res.send(`Someting went wrong, Try again!`);
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const filter = { _id: new ObjectId(req.params.id) }
+          const updatedData = { $set: { taskDate: req.body.taskDate, taskTitle: req.body.taskTitle, taskDescription: req.body.taskDescription, taskStatus: req.body.taskStatus } };
+          const result = await collection.updateOne(filter, updatedData);
+          if (result) {
+               res.redirect('/');
+          }
+     } catch (error) {
+          res.send(`Someting went wrong, Try again!`);
+     }
 });
 
 app.get('/delete/:id', async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
-        if (result) {
-            res.redirect('/');
-        }
-    } catch (error) {
-        res.send(`Someting went wrong!`);
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+          if (result) {
+               res.redirect('/');
+          }
+     } catch (error) {
+          res.send(`Someting went wrong!`);
+     }
 });
 
 app.post("/delete-multiple", async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const ids = [].concat(req.body.selectedTasks || []);
-        const selectedItems = ids.map(id => new ObjectId(id));
-        const result = await collection.deleteMany({ _id: { $in: selectedItems } });
-        if (result) {
-            res.redirect('/');
-        }
-    } catch (error) {
-        res.send(`Someting went wrong, Try again`);
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const ids = [].concat(req.body.selectedTasks || []);
+          const selectedItems = ids.map(id => new ObjectId(id));
+          const result = await collection.deleteMany({ _id: { $in: selectedItems } });
+          if (result) {
+               res.redirect('/');
+          }
+     } catch (error) {
+          res.send(`Someting went wrong, Try again`);
+     }
 });
 
 app.get("/search", async (req, res) => {
-    try {
-        const db = await connection();
-        const collection = db.collection(collectionName);
-        const searchText = req.query.q || "";
-        const result = await collection.find({
-            $or: [
-                { taskDate: { $regex: searchText, $options: "i" } },
-                { taskTitle: { $regex: searchText, $options: "i" } },
-                { taskDescription: { $regex: searchText, $options: "i" } },
-                { taskStatus: { $regex: searchText, $options: "i" } }
-            ]
-        }).toArray();
-        res.render("dashboard", { result });
-
-    } catch (error) {
-        console.error(error);
-        res.send("Error during search, Try again");
-    }
+     try {
+          const db = await connection();
+          const collection = db.collection(collectionName);
+          const searchText = req.query.q || "";
+          const result = await collection.find({
+               $or: [
+                    { taskDate: { $regex: searchText, $options: "i" } },
+                    { taskTitle: { $regex: searchText, $options: "i" } },
+                    { taskDescription: { $regex: searchText, $options: "i" } },
+                    { taskStatus: { $regex: searchText, $options: "i" } }
+               ]
+          }).toArray();
+          res.render("dashboard", { result, totalPages: 0, currentPage: 1, query: searchText });
+     } catch (error) {
+          res.send("Error during search, Try again");
+     }
 });
 
 
 app.listen(arg[2], () => {
-    console.log(`Server is running on ${arg[2]}`);
+     console.log(`Server is running on ${arg[2]}`);
 });
